@@ -21,11 +21,6 @@ func New(opt *Options) *Options {
 	return opt
 }
 
-// _storeContent store content to file
-func _storeContent(contents string, output string) error {
-	return nil
-}
-
 // _parseUrl parse an url
 // parsing url if url is valid download
 // else print error

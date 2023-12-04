@@ -38,7 +38,9 @@ func NewConfig(cfgPath string) error {
 		Log.Errorf("Error opening config file: %s", err)
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// Init new YAML decode
 	d := yaml.NewDecoder(file)
