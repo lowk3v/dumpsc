@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/lowk3v/dumpsc/internal"
 	"os"
 )
@@ -19,6 +20,27 @@ func _validateConfigPath(path string) error {
 	return nil
 }
 
+func _banner() {
+	author := "LowK"
+	projectName := "dumpsc"
+	// https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=%20dumpsc
+	_, _ = fmt.Fprintf(os.Stderr, "%s by %s\n%s\nCredits: https://github.com/lowk3v/%s\nTwitter: https://twitter.com/%s\n\n",
+		color.HiBlueString(`
+    ██████╗ ██╗   ██╗███╗   ███╗██████╗ ███████╗ ██████╗
+    ██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██╔════╝
+    ██║  ██║██║   ██║██╔████╔██║██████╔╝███████╗██║     
+    ██║  ██║██║   ██║██║╚██╔╝██║██╔═══╝ ╚════██║██║     
+    ██████╔╝╚██████╔╝██║ ╚═╝ ██║██║     ███████║╚██████╗
+    ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚══════╝ ╚═════╝`),
+		color.BlueString("@"+author),
+		"A tool is used to download a verified source code of smart contracts from an explorer.",
+		projectName,
+		author,
+	)
+	_, _ = fmt.Fprintf(os.Stderr, "Usage of: %s <options> <args>\n", projectName)
+	flag.PrintDefaults()
+}
+
 func parseFlags() (string, *internal.Options, error) {
 	var configPath string
 	var explorer string
@@ -33,6 +55,7 @@ func parseFlags() (string, *internal.Options, error) {
 	flag.StringVar(&apikey, "k", "", "Optional. api key of an explorer to use")
 	flag.StringVar(&output, "o", "src", "Optional. Output directory")
 	flag.StringVar(&url, "u", "", "Optional. Url to download")
+	flag.Usage = _banner
 	flag.Parse()
 
 	// require options
