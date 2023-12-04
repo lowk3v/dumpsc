@@ -21,8 +21,6 @@ func _validateConfigPath(path string) error {
 }
 
 func _banner() {
-	author := "LowK"
-	projectName := "dumpsc"
 	// https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=%20dumpsc
 	_, _ = fmt.Fprintf(os.Stderr, "%s by %s\n%s\nCredits: https://github.com/lowk3v/%s\nTwitter: https://twitter.com/%s\n\n",
 		color.HiBlueString(`
@@ -32,12 +30,12 @@ func _banner() {
     ██║  ██║██║   ██║██║╚██╔╝██║██╔═══╝ ╚════██║██║     
     ██████╔╝╚██████╔╝██║ ╚═╝ ██║██║     ███████║╚██████╗
     ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚══════╝ ╚═════╝`),
-		color.BlueString("@"+author),
+		color.BlueString("@LowK"),
 		"A tool is used to download a verified source code of smart contracts from an explorer.",
-		projectName,
-		author,
+		"dumpsc",
+		"Lowk3v_",
 	)
-	_, _ = fmt.Fprintf(os.Stderr, "Usage of: %s <options> <args>\n", projectName)
+	_, _ = fmt.Fprintf(os.Stderr, "Usage of: %s <options> <args>\n", os.Args[0])
 	flag.PrintDefaults()
 }
 
