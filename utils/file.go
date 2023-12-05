@@ -57,24 +57,3 @@ func WriteFile(path string, output string) error {
 
 	return nil
 }
-
-func ReadFile(path string) (string, error) {
-	if path == "" {
-		return "", errors.New("path is empty")
-	}
-
-	// Open file
-	file, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer func() {
-		_ = file.Close()
-	}()
-
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
-}

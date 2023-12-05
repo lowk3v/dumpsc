@@ -10,7 +10,7 @@ import (
 func TestOptions_Run(t *testing.T) {
 	//projectDir := os.Getenv("PROJECT_DIR")
 	projectDir := "/Users/lap14962/projects/me/dumpsc"
-	if global.NewConfig(projectDir+"/config.yml") != nil {
+	if global.CustomConfig(projectDir+"/config.yml") != nil {
 		os.Exit(0)
 	}
 

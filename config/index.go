@@ -1,6 +1,7 @@
 package config
 
 import (
+	_ "embed"
 	"github.com/lowk3v/dumpsc/pkg/log"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -8,6 +9,9 @@ import (
 
 var Config Yaml
 var Log log.Logger
+
+//go:embed config.yml
+var configYml string
 
 type Yaml struct {
 	EtherScan   ExplorerConfig `yaml:"etherscan"`
@@ -25,10 +29,17 @@ type ExplorerConfig struct {
 	ApiKey           string `yaml:"apiKey"`
 }
 
-func NewConfig(cfgPath string) error {
+func init() {
 	Log = *log.New("debug")
-	Config = Yaml{}
 
+	// Load Config yml
+	err := yaml.Unmarshal([]byte(configYml), &Config)
+	if err != nil {
+		Log.Errorf("Error loading config: %s", err)
+	}
+}
+
+func CustomConfig(cfgPath string) error {
 	// Open config file
 	file, err := os.Open(cfgPath)
 	if err != nil {

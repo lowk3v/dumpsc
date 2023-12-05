@@ -39,7 +39,7 @@ func _banner() {
 	flag.PrintDefaults()
 }
 
-func parseFlags() (string, *internal.Options, error) {
+func parseFlags() (*internal.Options, error) {
 	action := internal.NONE
 	var configPath string
 	var explorer string
@@ -50,7 +50,7 @@ func parseFlags() (string, *internal.Options, error) {
 	var listExplorer bool
 	var version bool
 
-	flag.StringVar(&configPath, "c", "./config.yml", "Optional. Path to config file")
+	flag.StringVar(&configPath, "c", "", "Optional. Path to config file")
 	flag.StringVar(&explorer, "e", "etherscan", "Required. An explorer to use")
 	flag.StringVar(&address, "a", "", "Required. Smart contract address to query")
 	flag.StringVar(&apikey, "k", "", "Optional. api key of an explorer to use")
@@ -83,22 +83,25 @@ func parseFlags() (string, *internal.Options, error) {
 		Url:      url,
 	}
 
-	if err := _validateConfigPath(configPath); err != nil {
-		return "", &internal.Options{}, err
+	if len(configPath) > 0 {
+		if err := _validateConfigPath(configPath); err != nil {
+			return &internal.Options{}, err
+		}
+		if err := global.CustomConfig(configPath); err != nil {
+			return &internal.Options{}, err
+		}
 	}
 
-	// Return the configuration path
-	return configPath, options, nil
+	return options, nil
 }
 
 func main() {
-	cfgPath, options, err := parseFlags()
+	options, err := parseFlags()
 	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(0)
 	}
-	if global.NewConfig(cfgPath) != nil {
-		os.Exit(0)
-	}
+
 	app := internal.New(options)
 	app.Run()
 }
