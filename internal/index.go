@@ -95,6 +95,7 @@ func (o Options) Run() {
 				return
 			}
 		}
+		_getSourceCode(o)
 	case GETSOURCECODE:
 		_getSourceCode(o)
 		break
