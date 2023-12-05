@@ -12,16 +12,12 @@ var Log log.Logger
 type Yaml struct {
 	EtherScan   ExplorerConfig `yaml:"etherscan"`
 	BscScan     ExplorerConfig `yaml:"bscscan"`
-	PolygonScan ExplorerConfig `yaml:"polygonscan"`
-	FtmScan     ExplorerConfig `yaml:"ftmscan"`
-	HecoInfo    ExplorerConfig `yaml:"hecoinfo"`
-	SnowTrace   ExplorerConfig `yaml:"snowtrace"`
 	ArbiScan    ExplorerConfig `yaml:"arbiscan"`
-	AvaxScan    ExplorerConfig `yaml:"avaxscan"`
+	PolygonScan ExplorerConfig `yaml:"polygonscan"`
 	CronoScan   ExplorerConfig `yaml:"cronoscan"`
-	MoonBean    ExplorerConfig `yaml:"moonbean"`
-	AuroraScan  ExplorerConfig `yaml:"aurorascan"`
+	MoonScan    ExplorerConfig `yaml:"moonscan"`
 	BaseScan    ExplorerConfig `yaml:"basescan"`
+	SnowTrace   ExplorerConfig `yaml:"snowtrace"`
 }
 
 type ExplorerConfig struct {

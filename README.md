@@ -21,7 +21,8 @@ go install github.com/lowk3v/dumpsc@latest
 ```
 
 # Todo 
-- [ ] Add more explorers
+- [X] List supported explorers
+- [X] Add more explorers
 - [ ] Add more tests
 - [ ] Support pipe input
 

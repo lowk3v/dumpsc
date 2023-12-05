@@ -3,13 +3,16 @@ package internal
 import (
 	"errors"
 	"fmt"
+	"github.com/fatih/structs"
 	global "github.com/lowk3v/dumpsc/config"
 	"github.com/lowk3v/dumpsc/internal/explorer"
 	"github.com/lowk3v/dumpsc/utils"
 	"regexp"
+	"strings"
 )
 
 type Options struct {
+	Action   ACTION
 	Explorer string
 	Address  string
 	ApiKey   string
@@ -41,26 +44,10 @@ func _parseUrl(url string) (string, string, error) {
 	return name[1], address[1], nil
 }
 
-func (o Options) Run() {
-	var expl *explorer.Explorer
-	var err error
-
-	// parse url
-	if o.Url != "" {
-		o.Explorer, o.Address, err = _parseUrl(o.Url)
-		if utils.HandleError(err, "") {
-			return
-		}
-	}
-
-	expl, err = explorer.New(o.Explorer)
+func _getSourceCode(o Options) {
+	expl, err := explorer.New(o.Explorer)
 	if utils.HandleError(err, "") {
 		return
-	}
-
-	// if empty, use default api key
-	if o.ApiKey != "" {
-		expl.ApiKey = o.ApiKey
 	}
 
 	// use default if empty
@@ -82,6 +69,40 @@ func (o Options) Run() {
 			global.Log.Errorf("Error write file: %s", err.Error())
 			continue
 		}
+	}
+}
+
+func _listExplorer() {
+	explorers := structs.Names(&global.Config)
+	global.Log.Infof("List explorer: %s", strings.ToLower(strings.Join(explorers, ", ")))
+}
+
+func (o Options) Run() {
+	var expl *explorer.Explorer
+	var err error
+
+	// if empty, use default api key
+	if o.ApiKey != "" {
+		expl.ApiKey = o.ApiKey
+	}
+
+	switch o.Action {
+	case GETSOURCECODEBYURL:
+		// parse url
+		if o.Url != "" {
+			o.Explorer, o.Address, err = _parseUrl(o.Url)
+			if utils.HandleError(err, "") {
+				return
+			}
+		}
+	case GETSOURCECODE:
+		_getSourceCode(o)
+		break
+	case LISTEXPLORER:
+		_listExplorer()
+		break
+	default:
+		global.Log.Errorf("Action not found")
 	}
 }
 

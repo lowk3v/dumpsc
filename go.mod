@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/fatih/color v1.16.0
+	github.com/fatih/structs v1.1.0
 	github.com/go-resty/resty/v2 v2.10.0
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/crypto v0.16.0

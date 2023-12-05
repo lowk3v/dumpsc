@@ -4,23 +4,21 @@ etherscan:
 bscscan:
   apiKey: HFUM7BBA5MRUQCN5UMEQPUZBUPPRHIQT3Y
   apiGetSourceCode: https://api.bscscan.com/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
-ftmscan:
-  apiKey: EH9NPZVF1HMNAQMAUZKA4VF7EC23X37DGS
-hecoinfo:
-  apiKey: XEUTJF2439EP4HHD23H2AFEFQJHFGSG57R
-snowtrace:
-  apiKey: IQEHAJ43W674REN5XV79WF47X37VEB8PIC
 arbiscan:
   apiKey: X3ZWJBXC14HTIR3B9DNYGEUICEIKKZ9ENZ
+  apiGetSourceCode: https://api.arbiscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
 polygonscan:
   apiKey: RV4YXDXEMIHXMC7ZXB8T82G4F56FRZ1SZQ
+  apiGetSourceCode: https://api.polygonscan.com/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
 cronoscan:
   apiKey: BGAN1CWT8E1A2XRS3FU61UP7XXFMHBWNSY
-moonbean:
+  apiGetSourceCode: https://api.cronoscan.com/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
+moonscan:
   apiKey: FENPKQI49RF2P916SQ2J58BTDMU69PQY8Y
-aurorascan:
-  apiKey: F2JS84SQHM53V4T3AN2CSX6ZHUAXFSHJ8Y
-basecan:
+  apiGetSourceCode: https://api-moonbeam.moonscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
+basescan:
   apiKey: YPYQHVV7QUANDI3CKK7R3B6Z7B4NDGNKAM
-avaxscan:
+  apiGetSourceCode: https://api.basescan.org/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
+snowtrace:
   apiKey: aaaa
+  apiGetSourceCode: https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
