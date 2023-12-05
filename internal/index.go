@@ -102,12 +102,7 @@ func (o Options) Run() {
 		_listExplorer()
 		break
 	case SHOWVERSION:
-		version, err := utils.ReadFile("VERSION")
-		if err != nil {
-			global.Log.Info("Version: 0")
-			break
-		}
-		global.Log.Infof("Version: %s", version)
+		global.Log.Infof("Version: %s", global.Version)
 		break
 	default:
 		global.Log.Errorf("Action not found")
