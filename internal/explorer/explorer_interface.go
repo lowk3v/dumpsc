@@ -1,9 +1,9 @@
 package explorer
 
 type ApiResponse struct {
-	Status  string         `json:"status"`
-	Message string         `json:"message"`
-	Results []ContractInfo `json:"result"`
+	Status  string      `json:"status"`
+	Message string      `json:"message"`
+	Results interface{} `json:"result"`
 }
 
 type ContractInfo struct {

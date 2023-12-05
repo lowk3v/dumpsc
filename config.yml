@@ -1,36 +1,26 @@
 etherscan:
   apiKey: 862Y3WJ4JB4B34PZQRFEV3IK6SZ8GNR9N5
-  apiGetSourceCode: https://api.etherscan.io/api
+  apiGetSourceCode: https://api.etherscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
 bscscan:
   apiKey: HFUM7BBA5MRUQCN5UMEQPUZBUPPRHIQT3Y
-  apiGetSourceCode: https://api.etherscan.io/api
+  apiGetSourceCode: https://api.bscscan.com/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
 ftmscan:
   apiKey: EH9NPZVF1HMNAQMAUZKA4VF7EC23X37DGS
-  apiGetSourceCode: https://api.etherscan.io/api
 hecoinfo:
   apiKey: XEUTJF2439EP4HHD23H2AFEFQJHFGSG57R
-  apiGetSourceCode: https://api.etherscan.io/api
 snowtrace:
   apiKey: IQEHAJ43W674REN5XV79WF47X37VEB8PIC
-  apiGetSourceCode: https://api.etherscan.io/api
 arbiscan:
   apiKey: X3ZWJBXC14HTIR3B9DNYGEUICEIKKZ9ENZ
-  apiGetSourceCode: https://api.etherscan.io/api
 polygonscan:
   apiKey: RV4YXDXEMIHXMC7ZXB8T82G4F56FRZ1SZQ
-  apiGetSourceCode: https://api.etherscan.io/api
 cronoscan:
   apiKey: BGAN1CWT8E1A2XRS3FU61UP7XXFMHBWNSY
-  apiGetSourceCode: https://api.etherscan.io/api
 moonbean:
   apiKey: FENPKQI49RF2P916SQ2J58BTDMU69PQY8Y
-  apiGetSourceCode: https://api.etherscan.io/api
 aurorascan:
   apiKey: F2JS84SQHM53V4T3AN2CSX6ZHUAXFSHJ8Y
-  apiGetSourceCode: https://api.etherscan.io/api
 basecan:
   apiKey: YPYQHVV7QUANDI3CKK7R3B6Z7B4NDGNKAM
-  apiGetSourceCode: https://api.etherscan.io/api
 avaxscan:
   apiKey: aaaa
-  apiGetSourceCode: https://api.etherscan.io/api
