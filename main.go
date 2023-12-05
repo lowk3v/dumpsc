@@ -71,7 +71,6 @@ func parseFlags() (string, *internal.Options, error) {
 		action = internal.GETSOURCECODE
 	} else {
 		_banner()
-		flag.PrintDefaults()
 		os.Exit(0)
 	}
 
