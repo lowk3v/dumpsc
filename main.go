@@ -48,6 +48,7 @@ func parseFlags() (string, *internal.Options, error) {
 	var output string
 	var url string
 	var listExplorer bool
+	var version bool
 
 	flag.StringVar(&configPath, "c", "./config.yml", "Optional. Path to config file")
 	flag.StringVar(&explorer, "e", "etherscan", "Required. An explorer to use")
@@ -56,11 +57,14 @@ func parseFlags() (string, *internal.Options, error) {
 	flag.StringVar(&output, "o", "src", "Optional. Output directory")
 	flag.StringVar(&url, "u", "", "Optional. Url to download")
 	flag.BoolVar(&listExplorer, "l", false, "Optional. Url to download")
+	flag.BoolVar(&version, "v", false, "Optional. show version")
 	flag.Usage = _banner
 	flag.Parse()
 
 	if listExplorer {
 		action = internal.LISTEXPLORER
+	} else if version {
+		action = internal.SHOWVERSION
 	} else if url != "" {
 		action = internal.GETSOURCECODEBYURL
 	} else if explorer != "" && address != "" {
