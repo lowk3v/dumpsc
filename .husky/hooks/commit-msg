@@ -1,0 +1,39 @@
+#!/bin/sh
+
+function mod() {
+    echo "$preMessage" | sed 's/\[fix\]/🐞/g'
+    echo "$preMessage" | sed 's/\[feat\]/💪/g'
+    echo "$preMessage" | sed 's/\[docs\]/📚/g'
+    echo "$preMessage" | sed 's/\[style\]/🎨/g'
+    echo "$preMessage" | sed 's/\[refactor\]/🔨/g'
+    echo "$preMessage" | sed 's/\[perf\]/🚀/g'
+    echo "$preMessage" | sed 's/\[test\]/🚨/g'
+    echo "$preMessage" | sed 's/\[build\]/👷/g'
+    echo "$preMessage" | sed 's/\[ci\]/🔧/g'
+    echo "$preMessage" | sed 's/\[chore\]/🔧/g'
+    echo "$preMessage" | sed 's/\[revert\]/⏪/g'
+    echo "$preMessage" | sed 's/\[WIP\]/🚧/g'
+    echo "$preMessage" | sed 's/\[skip ci\]/🔥/g'
+    echo "$preMessage" | sed 's/\[release\]/🔖/g'
+    echo "$preMessage" | sed 's/\[dependabot\]/📦/g'
+    echo "$preMessage" | sed 's/\[security\]/🔒/g'
+    echo "$preMessage" | sed 's/\[breaking\]/💥/g'
+    echo "$preMessage" | sed 's/\[license\]/📝/g'
+    echo "$preMessage" | sed 's/\[config\]/🔧/g'
+    echo "$preMessage" | sed 's/\[merge\]/🔀/g'
+    echo "$preMessage" | sed 's/\[ignore\]/🙈/g'
+    echo "$preMessage" | sed 's/\[add\]/➕/g'
+    echo "$preMessage" | sed 's/\[remove\]/➖/g'
+    echo "$preMessage" | sed 's/\[update\]/🔼/g'
+    echo "$preMessage" | sed 's/\[downgrade\]/🔽/g'
+    echo "$preMessage" | sed 's/\[rename\]/🔁/g'
+    echo "$preMessage" | sed 's/\[move\]/🔀/g'
+    echo "$preMessage" | sed 's/\[copy\]/📝/g'
+    echo "$preMessage" | sed 's/\[tag\]/🔖/g'
+    echo "$preMessage" | sed 's/\[hotfix\]/🚑/g'
+    echo "$preMessage" | sed 's/\[critical\]/🚨/g'
+}
+preMessage="$(cat $1)"
+afterMessage=""
+
+echo "$1"
