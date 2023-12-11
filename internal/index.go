@@ -32,7 +32,7 @@ func _parseUrl(url string) (string, string, error) {
 		return "", "", errors.New("the url is empty")
 	}
 	regExplorer := regexp.MustCompile(`https://([a-z.\-]+)\.`)
-	regAddress := regexp.MustCompile(`https://.*/address/(0x[a-zA-Z0-9]{40}).*`)
+	regAddress := regexp.MustCompile(`https://.*/(address|token)/(0x[a-zA-Z0-9]{40}).*`)
 
 	name := regExplorer.FindStringSubmatch(url)
 	address := regAddress.FindStringSubmatch(url)
