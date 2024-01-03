@@ -25,7 +25,8 @@ go install github.com/lowk3v/dumpsc@latest
 - [X] Add more explorers
 - [x] Show version of binary
 - [ ] Add more tests
-- [ ] Support pipe input
+- [ ] Support input from stdin
+- [ ] Support output to stdout
 
 # Donate
 

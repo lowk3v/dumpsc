@@ -41,10 +41,11 @@ func _parseUrl(url string) (string, string, error) {
 		return "", "", errors.New("the url is not valid")
 	}
 
-	return name[1], address[1], nil
+	return name[1], address[2], nil
 }
 
 func _getSourceCode(o Options) {
+	global.Log.Infof("output to %s", o.Output)
 	expl, err := explorer.New(o.Explorer)
 	if utils.HandleError(err, "") {
 		return

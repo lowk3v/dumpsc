@@ -10,8 +10,15 @@ import (
 )
 
 type Explorer struct {
+	Chain            string `yaml:"chain"`
 	ApiGetSourceCode string `yaml:"apiGetSourceCode"`
 	ApiKey           string `yaml:"apiKey"`
+}
+
+type AddressInfo struct {
+	Address  string `json:"address"`
+	Contract string `json:"contract"`
+	Chain    string `json:"chain"`
 }
 
 func New(explorerName string) (*Explorer, error) {
@@ -30,6 +37,7 @@ func New(explorerName string) (*Explorer, error) {
 
 	e := val.FieldByName(c.Name).Interface().(global.ExplorerConfig)
 	return &Explorer{
+		Chain:            explorerName,
 		ApiGetSourceCode: e.ApiGetSourceCode,
 		ApiKey:           e.ApiKey,
 	}, nil
@@ -77,12 +85,8 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 		return nil, err
 	}
 
-	files := []ContractFile{
-		{
-			Name:    "address.txt",
-			Content: address,
-		},
-	}
+	var files []ContractFile
+	var addresses []AddressInfo
 
 	var contractInfos []ContractInfo
 	marshal, _ := json.Marshal(response.Results)
@@ -97,6 +101,12 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 			(result.ContractName == "" && result.ABI == "Contract source code not verified") {
 			return nil, errors.New("the contract source code is not verified")
 		}
+
+		addresses = append(addresses, AddressInfo{
+			Address:  address,
+			Contract: result.ContractName,
+			Chain:    e.Chain,
+		})
 
 		// source code has settings
 		trimSourceCode := ""
@@ -154,6 +164,12 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 			return implCode, nil
 		}
 	}
+
+	addressJson, _ := json.Marshal(addresses)
+	files = append(files, ContractFile{
+		Name:    "addresses.json",
+		Content: string(addressJson),
+	})
 
 	return files, nil
 }
