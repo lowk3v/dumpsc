@@ -49,7 +49,9 @@ func parseFlags() (*internal.Options, error) {
 	var url string
 	var listExplorer bool
 	var version bool
+	var verbose bool
 
+	flag.BoolVar(&verbose, "V", false, "Optional. Verbose mode")
 	flag.StringVar(&configPath, "c", "", "Optional. Path to config file")
 	flag.StringVar(&explorer, "e", "etherscan", "Required. An explorer to use")
 	flag.StringVar(&address, "a", "", "Required. Smart contract address to query")
@@ -81,6 +83,7 @@ func parseFlags() (*internal.Options, error) {
 		ApiKey:   apikey,
 		Output:   output,
 		Url:      url,
+		Verbose:  verbose,
 	}
 
 	if len(configPath) > 0 {
@@ -100,6 +103,11 @@ func main() {
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(0)
+	}
+
+	if options.Verbose {
+		global.Log.Infof("Verbose mode is enabled")
+		global.Log.Infof("Action: %v", options.Action)
 	}
 
 	app := internal.New(options)

@@ -22,7 +22,6 @@ type AddressInfo struct {
 }
 
 func New(explorerName string) (*Explorer, error) {
-	global.Log.Infof("explorer: %s", explorerName)
 	val := reflect.Indirect(reflect.ValueOf(global.Config))
 
 	c, is := val.Type().FieldByNameFunc(func(s string) bool {
@@ -66,7 +65,6 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 	if address == "" || address == "0x" {
 		return nil, errors.New("address is empty")
 	}
-	global.Log.Infof("address: %s", address)
 
 	fullApi := strings.ReplaceAll(e.ApiGetSourceCode, "{address}", address)
 	fullApi = strings.ReplaceAll(fullApi, "{apiKey}", e.ApiKey)

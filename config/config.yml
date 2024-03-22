@@ -22,6 +22,6 @@ basescan:
 snowtrace:
   apiKey: aaaa
   apiGetSourceCode: https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
-blast:
+blastscan:
   apiKey: WKI92PUAYG4RIQ9QJA7NE2XIKHWC7EQTZE
-  apiGetSourceCode: https://api.etherscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}
+  apiGetSourceCode: https://api.blastscan.io/api?module=contract&action=getsourcecode&address={address}&apikey={apiKey}

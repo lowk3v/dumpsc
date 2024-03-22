@@ -18,6 +18,7 @@ type Options struct {
 	ApiKey   string
 	Output   string
 	Url      string
+	Verbose  bool
 }
 
 func New(opt *Options) *Options {
@@ -45,10 +46,19 @@ func _parseUrl(url string) (string, string, error) {
 }
 
 func _getSourceCode(o Options) {
-	global.Log.Infof("output to %s", o.Output)
+	if o.Verbose {
+		global.Log.Infof("Explorer: %s", o.Explorer)
+		global.Log.Infof("Address: %s", o.Address)
+	}
+	global.Log.Infof("Output to %s", o.Output)
+
 	expl, err := explorer.New(o.Explorer)
 	if utils.HandleError(err, "") {
 		return
+	}
+
+	if o.Verbose {
+		global.Log.Infof("API endpoint: %s", expl.ApiGetSourceCode)
 	}
 
 	// use default if empty
@@ -62,7 +72,7 @@ func _getSourceCode(o Options) {
 
 	// store data
 	for _, fileContent := range fileContents {
-		global.Log.Infof("downloaded: %s", fileContent.Name)
+		global.Log.Infof("Downloaded: %s", fileContent.Name)
 		if err := utils.WriteFile(
 			fmt.Sprintf("%s/%s", o.Output, fileContent.Name),
 			fileContent.Content,

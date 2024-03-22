@@ -22,6 +22,7 @@ type Yaml struct {
 	MoonScan    ExplorerConfig `yaml:"moonscan"`
 	BaseScan    ExplorerConfig `yaml:"basescan"`
 	SnowTrace   ExplorerConfig `yaml:"snowtrace"`
+	BlastScan   ExplorerConfig `yaml:"blastscan"`
 }
 
 type ExplorerConfig struct {
