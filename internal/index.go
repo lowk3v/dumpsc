@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/fatih/structs"
@@ -64,11 +65,25 @@ func _getSourceCode(o Options) {
 	// use default if empty
 	utils.DirExists(o.Output, true)
 
+	// load existed addresses.json
+	var addressJson []explorer.AddressInfo
+	if content, err := utils.ReadFile(o.Output + "/addresses.json"); err == nil {
+		_ = json.Unmarshal(content, &addressJson)
+	}
+
 	// download data
-	fileContents, err := expl.GetSourceCode(o.Address, 3)
+	newAddressJson, fileContents, err := expl.GetSourceCode(o.Address, 3)
 	if utils.HandleError(err, "") || fileContents == nil {
 		return
 	}
+
+	// write new addresses.json
+	addressJson = append(addressJson, newAddressJson...)
+	newAddressStr, _ := json.MarshalIndent(addressJson, "", "\t")
+	fileContents = append(fileContents, explorer.ContractFile{
+		Name:    "addresses.json",
+		Content: string(newAddressStr),
+	})
 
 	// store data
 	for _, fileContent := range fileContents {
@@ -81,6 +96,7 @@ func _getSourceCode(o Options) {
 			continue
 		}
 	}
+
 }
 
 func _listExplorer() {

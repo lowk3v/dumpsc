@@ -57,3 +57,26 @@ func WriteFile(path string, output string) error {
 
 	return nil
 }
+
+func ReadFile(path string) ([]byte, error) {
+	if path == "" {
+		return nil, errors.New("path is not exist")
+	}
+
+	// Read file
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
+	// Read file
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}

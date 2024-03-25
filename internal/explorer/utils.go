@@ -2,19 +2,22 @@ package explorer
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/go-resty/resty/v2"
 	"golang.org/x/crypto/sha3"
+	"reflect"
 	"strings"
 )
 
-func sourceCodeContainsSetting(code string) bool {
+func containsSetting(code string) bool {
 	return strings.HasPrefix(code, "{{")
 }
 
-func sourceCodeNotContainsSetting(code string) bool {
+func notContainsSetting(code string) bool {
 	return strings.HasPrefix(code, "{")
 }
 
-func parseSourceCodeString(code string) (SourceCodeInfo, error) {
+func parseSourceCodeToStruct(code string) (SourceCodeInfo, error) {
 	var sources SourceCodeInfo
 	err := json.Unmarshal([]byte(code), &sources)
 	if err != nil {
@@ -51,4 +54,32 @@ func ChecksumAddress(address string) string {
 	}
 
 	return ret
+}
+
+func parseSourceCodeRaw(sourceCodeRaw string) string {
+	trimSourceCode := ""
+	if containsSetting(sourceCodeRaw) {
+		trimSourceCode = strings.ReplaceAll(strings.ReplaceAll(sourceCodeRaw, "{{", "{"), "}}", "}")
+	} else if notContainsSetting(sourceCodeRaw) {
+		trimSourceCode = sourceCodeRaw
+	}
+	return trimSourceCode
+}
+
+func isDataError(apiResponse *resty.Response, response *ApiResponse) error {
+	if apiResponse.StatusCode() != 200 {
+		return errors.New(apiResponse.Status())
+	}
+	if response.Status != "1" {
+		return errors.New(apiResponse.String())
+	}
+	if response.Results == nil {
+		return errors.New("no result")
+	}
+
+	if reflect.TypeOf(response.Results).Kind() == reflect.String &&
+		response.Results.(string) == "Contract source code not verified" {
+		return errors.New("the contract source code is not verified")
+	}
+	return nil
 }

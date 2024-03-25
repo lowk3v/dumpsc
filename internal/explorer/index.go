@@ -16,9 +16,10 @@ type Explorer struct {
 }
 
 type AddressInfo struct {
-	Address  string `json:"address"`
-	Contract string `json:"contract"`
-	Chain    string `json:"chain"`
+	Address        string `json:"address"`
+	Contract       string `json:"contract"`
+	Implementation string `json:"implementation"`
+	Chain          string `json:"chain"`
 }
 
 func New(explorerName string) (*Explorer, error) {
@@ -42,36 +43,9 @@ func New(explorerName string) (*Explorer, error) {
 	}, nil
 }
 
-func _isDataError(apiResponse *resty.Response, response *ApiResponse) error {
-	if apiResponse.StatusCode() != 200 {
-		return errors.New(apiResponse.Status())
-	}
-	if response.Status != "1" {
-		return errors.New(apiResponse.String())
-	}
-	if response.Results == nil {
-		return errors.New("no result")
-	}
-
-	if reflect.TypeOf(response.Results).Kind() == reflect.String &&
-		response.Results.(string) == "Contract source code not verified" {
-		return errors.New("the contract source code is not verified")
-	}
-	return nil
-}
-
-func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile, error) {
-	address = ChecksumAddress(address)
-	if address == "" || address == "0x" {
-		return nil, errors.New("address is empty")
-	}
-
+func (e *Explorer) pullSourceCodeRaw(address string) ([]ContractInfo, error) {
 	fullApi := strings.ReplaceAll(e.ApiGetSourceCode, "{address}", address)
 	fullApi = strings.ReplaceAll(fullApi, "{apiKey}", e.ApiKey)
-	if proxyDepth > 3 {
-		// Should not be more than 3
-		proxyDepth = 3
-	}
 
 	var response ApiResponse
 	httpClient := resty.New()
@@ -79,12 +53,9 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 	if err != nil {
 		return nil, err
 	}
-	if err := _isDataError(rawResp, &response); err != nil {
+	if err := isDataError(rawResp, &response); err != nil {
 		return nil, err
 	}
-
-	var files []ContractFile
-	var addresses []AddressInfo
 
 	var contractInfos []ContractInfo
 	marshal, _ := json.Marshal(response.Results)
@@ -92,32 +63,58 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 	if err != nil {
 		return nil, err
 	}
+	return contractInfos, nil
+}
+
+func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]AddressInfo, []ContractFile, error) {
+	addresses := make([]AddressInfo, 0)
+	files := make([]ContractFile, 0)
+
+	// pre-check address
+	address = ChecksumAddress(address)
+	if address == "" || address == "0x" {
+		return nil, nil, errors.New("address is empty")
+	}
+
+	if proxyDepth > 3 {
+		// Should not be more than 3
+		proxyDepth = 3
+	}
+
+	// pulling source code
+	contractInfos, err := e.pullSourceCodeRaw(address)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// classify source code
 	for _, result := range contractInfos {
+		// source code not found
 		if result.SourceCode == "" ||
 			(result.ContractName == "" && result.ABI == "Contract source code not verified") {
-			return nil, errors.New("the contract source code is not verified")
+			return nil, nil, errors.New("the contract source code is not verified")
 		}
 
-		addresses = append(addresses, AddressInfo{
+		addressInfo := AddressInfo{
 			Address:  address,
 			Contract: result.ContractName,
 			Chain:    e.Chain,
-		})
-
-		// source code has settings
-		trimSourceCode := ""
-		if sourceCodeContainsSetting(result.SourceCode) {
-			trimSourceCode = strings.ReplaceAll(strings.ReplaceAll(result.SourceCode, "{{", "{"), "}}", "}")
-		} else if sourceCodeNotContainsSetting(result.SourceCode) {
-			trimSourceCode = result.SourceCode
 		}
 
-		if trimSourceCode != "" {
-			parsed, err := parseSourceCodeString(trimSourceCode)
+		// source code has settings
+		trimSourceCode := parseSourceCodeRaw(result.SourceCode)
+
+		if trimSourceCode == "" {
+			// other source codes
+			ext := contractLanguage(result.CompilerVersion)
+			files = append(files, ContractFile{
+				Name:    result.ContractName + ext,
+				Content: result.SourceCode,
+			})
+		} else {
+			parsed, err := parseSourceCodeToStruct(trimSourceCode)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
 
 			// get settings
@@ -127,7 +124,7 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 				Content: string(v),
 			})
 
-			// get remappings
+			// get remapping
 			if strings.Contains(string(v), "remappings") {
 				remapping, _ := json.Marshal(parsed.Settings["remappings"])
 				files = append(files, ContractFile{
@@ -143,31 +140,29 @@ func (e *Explorer) GetSourceCode(address string, proxyDepth int) ([]ContractFile
 					Content: parsed.Sources[key.String()]["content"],
 				})
 			}
-		} else {
-			ext := contractLanguage(result.CompilerVersion)
-			files = append(files, ContractFile{
-				Name:    result.ContractName + ext,
-				Content: result.SourceCode,
-			})
 		}
 
 		// If the contract is a proxy, we need to get the implementation contract
 		if result.Implementation != "" && proxyDepth > 0 && result.Implementation != address {
 			global.Log.Infof("Is proxy, get implementation: %s", result.Implementation)
-			implCode, err := e.GetSourceCode(result.Implementation, proxyDepth-1)
+			implAddrs, implCode, err := e.GetSourceCode(result.Implementation, proxyDepth-1)
 			if err != nil {
-				return nil, err
+				return nil, nil, err
 			}
+
+			// add the implementation to the addresses
+			for i := range implAddrs {
+				implAddrs[i].Address = address
+				implAddrs[i].Implementation = result.Implementation
+			}
+			addresses = append(addresses, implAddrs...)
+
 			// return the implementation instead of
-			return implCode, nil
+			return addresses, implCode, nil
 		}
+
+		addresses = append(addresses, addressInfo)
 	}
 
-	addressJson, _ := json.Marshal(addresses)
-	files = append(files, ContractFile{
-		Name:    "addresses.json",
-		Content: string(addressJson),
-	})
-
-	return files, nil
+	return addresses, files, nil
 }
